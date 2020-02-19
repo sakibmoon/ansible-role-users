@@ -1,2 +1,63 @@
 ---
-# defaults file for ansible-role-users
+# allow passwordless sudo for all sudo/wheel
+passwordless_sudo_all: false
+users_list: []
+
+# Example:
+# users_list:
+#   - name: deploy
+#     state: present
+#     authorized_keys:
+#       key: /home/username/.ssh/id_rsa.pub
+
+# See https://docs.ansible.com/ansible/2.8/modules/user_module.html for all the options related to user creation
+# See https://docs.ansible.com/ansible/2.8/modules/authorized_key_module.html for all the options related to authorized_keys section
+# The following options are not part of the modules
+# sudo_user: whether to add this user to sudo/wheel group. Default: false
+# passwordless_sudo: whether to enable passwordless sudo for this user. Default: false
+
+# Example with all the options
+#
+# users_list:
+#   - name: user1
+#     state: present
+#     sudo_user: false
+#     passwordless_sudo: false
+#     groups:
+#       - group1
+#       - group2
+#     group: primary_group
+#     append: false
+#     comment: 'gecos field'
+#     create_home: true
+#     expires: 'epochnumber'
+#     force: false
+#     generate_ssh_key: false
+#     home: /home/homename
+#     local: false
+#     move_home: false
+#     non_unique: false
+#     password: 'hashed password'
+#     password_lock: false
+#     remove: false
+#     seuser: 'user_u'    
+#     shell: '/bin/bash'
+#     skeleton: '/skeldirpath'
+#     ssh_key_bits: 4096
+#     ssh_key_comment: 'comment'
+#     ssh_key_file: /sshkeypath
+#     ssh_key_passphrase: 'passphrase'
+#     ssh_key_type: 'rsa'
+#     system: no
+#     uid: 1234
+#     update_password: always
+#     authorized_keys:
+#         key: /sshpublickeypath
+#         comment: 'change the comment on the public key'
+#         exclusive: false
+#         follow: false
+#         key_options: 'ssh key options'
+#         manage_dir: true
+#         path: /pathtoauthorizedkeyfile
+#         state: present
+#         validate_certs: true

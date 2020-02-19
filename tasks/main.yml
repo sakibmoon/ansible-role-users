@@ -1,2 +1,43 @@
 ---
 # tasks file for ansible-role-users
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: Include files from sudoers.d
+  lineinfile:
+    path: "/etc/sudoers"
+    regexp: "^#includedir /etc/sudoers.d"
+    line: "#includedir /etc/sudoers.d"
+    state: "present"
+    backup: true
+    validate: "/usr/sbin/visudo -cf %s"
+
+- block:
+    - include_tasks: single_user_tasks.yml
+      loop: "{{ users_list }}"
+      loop_control:
+        loop_var: current_user
+
+- name: Ensure sudo group is present
+  group:
+    name: "{{ sudo_group_name }}"
+    state: present
+  when: passwordless_sudo_all
+
+- name: Allow sudo group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ sudo_group_name }}"
+    line: "%{{ sudo_group_name }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+  when: passwordless_sudo_all
+
+- name: Remove passwordless sudo from sudoers group
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ sudo_group_name }}"
+    line: "%{{ sudo_group_name }} ALL=(ALL) ALL"
+    validate: "/usr/sbin/visudo -cf %s"
+  when: not passwordless_sudo_all

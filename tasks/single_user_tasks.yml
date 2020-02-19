@@ -1,0 +1,82 @@
+---
+- name: Create user groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ current_user.groups }}"
+  when: current_user.groups is defined and (current_user.state is not defined or current_user.state != 'absent')
+
+- name: Ensure sudo group is present
+  group:
+    name: "{{ sudo_group_name }}"
+    state: present
+  when: current_user.sudo_user|default(false)|bool
+
+- name: Create user
+  user:
+    name: "{{ current_user.name  }}"
+    append: "{{ current_user.append|default(false)|bool }}"
+    comment: "{{ current_user.comment|default(omit) }}"
+    create_home: "{{ current_user.create_home|default(true)|bool }}"
+    expires: "{{ current_user.expires|default(omit) }}"
+    force: "{{ current_user.force|default(omit) }}"
+    generate_ssh_key: "{{ current_user.generate_ssh_key|default(false)|bool }}"
+    group: "{{ current_user.group|default(omit) }}"
+    groups: "{{ current_user.groups|default(omit) }}"
+    home: "{{ current_user.home|default(omit) }}"
+    local: "{{ current_user.local|default(false)|bool }}"
+    move_home: "{{ current_user.move_home|default(false)|bool }}"
+    non_unique: "{{ current_user.non_unique|default(false)|bool }}"
+    password: "{{ current_user.password|default(omit) }}"
+    password_lock: "{{ current_user.password_lock|default(omit) }}"
+    remove: "{{ current_user.remove|default(false)|bool }}"
+    seuser: "{{ current_user.seuser|default(omit) }}"
+    shell: "{{ current_user.shell|default(omit) }}"
+    skeleton: "{{ current_user.skeleton|default(omit) }}"
+    ssh_key_bits: "{{ current_user.ssh_key_bits|default(omit) }}"
+    ssh_key_comment: "{{ current_user.ssh_key_comment|default(omit) }}"
+    ssh_key_file: "{{ current_user.ssh_key_file|default(omit) }}"
+    ssh_key_passphrase: "{{ current_user.ssh_key_passphrase|default(omit) }}"
+    ssh_key_type: "{{ current_user.ssh_key_type|default('rsa') }}"
+    state: "{{ current_user.state|default('present') }}"
+    system: "{{ current_user.system_user|default(false)|bool }}"
+    uid: "{{ current_user.uid|default(omit) }}"
+    update_password: "{{ current_user.update_password|default('always') }}"
+  when: current_user.name is defined
+
+- name: Add user to sudo/wheel group
+  user:
+    name: "{{ current_user.name }}"
+    groups: "{{ sudo_group_name }}"
+    append: yes
+  when: current_user.name is defined and current_user.sudo_user|default(false)|bool and (current_user.state is not defined or current_user.state != 'absent')
+
+- name: Add ssh key for user
+  authorized_key:
+    user: "{{ current_user.name }}"
+    key: "{{ lookup('file', current_user.authorized_key.key) }}"
+    comment: "{{ current_user.authorized_key.comment|default(omit) }}"
+    exclusive: "{{ current_user.authorized_key.exclusive|default(false)|bool }}"
+    follow: "{{ current_user.authorized_key.follow|default(false)|bool }}"
+    key_options: "{{ current_user.authorized_key.key_options|default(omit) }}"
+    manage_dir: "{{ current_user.authorized_key.manage_dir|default(true)|bool }}"
+    path: "{{ current_user.authorized_key.path|default(omit) }}"
+    state: "{{ current_user.authorized_key.state|default('present') }}"
+    validate_certs: "{{ current_user.authorized_key.validate_certs|default(true)|bool }}"
+  when: current_user.set_authorized_key|default(true)|bool and current_user.authorized_key.key is defined and (current_user.state is not defined or current_user.state != 'absent')
+
+- name: Enable passwordless sudo for user
+  template:
+    src: sudoers_file
+    dest: "/etc/sudoers.d/{{ current_user.name }}"
+    owner: "root"
+    group: "root"
+    mode: "0440"
+    validate: "/usr/sbin/visudo -cf %s"
+  when: current_user.name is defined and current_user.sudo_user|default(false)|bool and current_user.passwordless_sudo|default(false)|bool
+
+- name: Remove user from passwordless sudo
+  file:
+    path: "/etc/sudoers.d/{{ current_user.name }}"
+    state: absent
+  when: (current_user.name is defined and current_user.state is defined and current_user.state == 'absent') or (current_user.name is defined and (current_user.passwordless_sudo not defined or not current_user.passwordless_sudo))
