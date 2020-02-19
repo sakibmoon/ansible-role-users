@@ -12,6 +12,7 @@ Role Variables
 --------------
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
+
     passwordless_sudo_all: false
     create_users: []
 
@@ -28,9 +29,6 @@ None
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables
-passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
          - { role: sakibmoon.users }
@@ -43,4 +41,4 @@ MIT
 Author Information
 ------------------
 
-This role was created by sakibmoon in 2018.
+This role was created by sakibmoon in 2020.

@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: users
   author: sakibmoon
   description: Ansible role to manage(create/delete/modify) users
 
