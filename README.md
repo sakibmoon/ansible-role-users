@@ -84,7 +84,7 @@ and authorization key located at `/home/local/.ssh/id_rsa.pub`
         state: present
         sudo_user: yes
         passwordless_sudo: yes
-        authorized_keys:
+        authorized_key:
           key: /home/local/.ssh/id_rsa.pub
 ```
            
