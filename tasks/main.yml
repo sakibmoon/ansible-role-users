@@ -6,6 +6,7 @@
 - name: Update cache for Debian
   apt:
     update_cache: true
+  when: ansible_os_family = 'Debian'
 
 - name: Include files from sudoers.d
   lineinfile:
