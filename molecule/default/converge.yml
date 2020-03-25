@@ -32,4 +32,4 @@
       - name: dashuser
         shell: /bin/dash
   roles:
-    - role: ansible-role-users
+    - role: sakibmoon.users
