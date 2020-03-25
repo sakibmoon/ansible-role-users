@@ -1,2 +1,3 @@
 ---
 sudo_group_name: wheel
+openssh_package: openssh

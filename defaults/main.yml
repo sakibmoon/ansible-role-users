@@ -30,7 +30,7 @@ users_list: []
 #     append: false
 #     comment: 'gecos field'
 #     create_home: true
-#     expires: 'epochnumber'
+#     expires: 1422403387
 #     force: false
 #     generate_ssh_key: false
 #     home: /home/homename

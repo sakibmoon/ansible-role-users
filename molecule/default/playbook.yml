@@ -1,5 +1,35 @@
 ---
 - name: Converge
   hosts: all
+  vars:
+    users_list:
+      - name: newuser
+        state: present
+        groups:
+          - group1
+          - group2
+      - name: sudouser
+        state: present
+        sudo_user: true
+        passwordless_sudo: true
+      - name: testuser
+      - name: appendremoveuser
+        groups:
+          - group1
+      - name: primarygroupuser
+        group: randomgroup
+      - name: homeuser
+        home: /home/testhome
+      - name: sshkeyuser
+        generate_ssh_key: true
+      - name: sshkeyfileuser
+        generate_ssh_key: true
+        ssh_key_file: .ssh/customkey
+      - name: uiduser
+        uid: 1099
+      - name: bashuser
+        shell: /bin/bash
+      - name: dashuser
+        shell: /bin/dash
   roles:
     - role: ansible-role-users
