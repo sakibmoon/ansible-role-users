@@ -1,6 +1,7 @@
 Ansible Role - Users
 =========
 
+[![Build Status](https://travis-ci.com/sakibmoon/ansible-role-users.svg?branch=master)](https://travis-ci.com/sakibmoon/ansible-role-users)   
 An ansible role to manage users on RHEL/Centos and Debian/Ubuntu servers
 
 Requirements
