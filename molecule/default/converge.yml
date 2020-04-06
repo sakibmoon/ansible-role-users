@@ -34,4 +34,4 @@
       - name: systemuser
         system: true
   roles:
-    - role: ansible-role-users
+    - role: sakibmoon.users
