@@ -4,6 +4,10 @@
     set_fact:
       user_state: "{{ 'present' if current_user.state is not defined else current_user.state }}"
 
+  - name: Set create home variable
+    set_fact:
+      user_create_home: "{{ false if (current_user.system|default(false)) else current_user.create_home|default(true) }}"
+
   - name: Create user groups
     group:
       name: "{{ item }}"
@@ -34,7 +38,7 @@
       name: "{{ current_user.name  }}"
       append: "{{ current_user.append|default(false)|bool }}"
       comment: "{{ current_user.comment|default(omit) }}"
-      create_home: "{{ current_user.create_home|default(true)|bool }}"
+      create_home: "{{ user_create_home }}"
       expires: "{{ current_user.expires|default(omit) }}"
       force: "{{ current_user.force|default(omit) }}"
       generate_ssh_key: "{{ current_user.generate_ssh_key|default(false)|bool }}"

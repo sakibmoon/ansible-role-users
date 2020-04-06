@@ -31,5 +31,7 @@
         shell: /bin/bash
       - name: dashuser
         shell: /bin/dash
+      - name: systemuser
+        system: true
   roles:
-    - role: sakibmoon.users
+    - role: ansible-role-users

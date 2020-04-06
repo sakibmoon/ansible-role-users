@@ -93,3 +93,11 @@ def test_dashshell(host):
     user = host.user('dashuser')
 
     assert user.shell == '/bin/dash'
+
+
+def test_systemuser(host):
+    user = host.user('systemuser')
+
+    user_home = host.file('/home/systemuser/')
+    assert not user_home.exists
+    assert user.home == '/home/systemuser'
